@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Lista de Evaluaciones</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .menu-link {
+                font-family: Arial, sans-serif;
+            }
+            footer {
+                background-color: rgba(0, 0, 0, 0.05);
+                padding: 10px;
+                text-align: center;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+            .navbar-brand, .nav-link {
+                font-size: 1.25rem;
+            }
+            .btn-success {
+                background-color: #28a745;
+                border-color: #28a745;
+            }
+            .btn-success:hover {
+                background-color: #fff;
+                border-color: #28a745;
+                color: #28a745;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+            <a class="navbar-brand" th:href="@{/}">
+                <img th:src="@{/img/Cuadernillo.png}" width="50" height="50" alt="Logo">
+                SGNC
+            </a>
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-light" id="navbarDropdown" href="https://campusjalpa.uaz.edu.mx/">Campus Jalpa</a>
+                        </li>
+
+                        <!-- Cuadernillo -->
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link dropdown-toggle text-light" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                Cuadernillo
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">                               
+                                <a class="dropdown-item text-black" th:href="@{/cuadernillos}">Mostrar Cuadernillos</a>
+                            </div>
+                        </li>
+
+                        <!-- Alumnos -->
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link dropdown-toggle text-light" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                Alumnos
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item text-black" th:href="@{/agregar-alumno}">Agregar Alumno</a>
+                                <a class="dropdown-item text-black" th:href="@{/mostrar-alumnos}">Mostrar Alumnos</a>
+                            </div>
+                        </li>
+
+                        <!-- Evaluaciones -->
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link dropdown-toggle text-light" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                Evaluaciones
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item text-black" th:href="@{/evaluaciones/agregar-evaluacion}">Agregar Evaluacion</a>
+                                <a class="dropdown-item text-black" th:href="@{/evaluaciones/mostrar-evaluacion}">Mostrar Evaluaciones</a>
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-light" id="navbarDropdown" th:href="@{/inicio}">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" onclick="history.back()">Regresar</a>
+                        </li>
+                        
+                        <form class="d-flex" th:action="@{/logout}" method="post">
+                            <button class="btn btn-outline-light" type="submit">Cerrar Sesión</button>
+                        </form>
+
+                        <form th:action="@{/buscar}" class="form-inline my-2 my-lg-0">
+                            <div class="input-group">
+                                <input autofocus="autofocus" name="consulta" class="form-control mr-sm-2" type="search" th:placeholder="${param.q}" aria-label="Search">
+                                <button class="btn btn-success my-2 my-sm-0" type="submit">Buscar</button>
+                            </div>
+                        </form>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-5">
+            <h1 class="text-center mb-4">Lista de Evaluaciones</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Clave del Cuadernillo</th>
+                        <th>Matricula</th>
+                        <th>Numeros Aleatorios</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="evaluacion : ${evaluaciones}">
+                        <td th:text="${evaluacion.cuadernillo.cua_clave}"></td>
+                        <td th:text="${evaluacion.alumno.alu_matricula}"></td>
+                        <td th:text="${evaluacion.eva_num_aleatorios}"></td>
+                        <td th:text="${evaluacion.eva_fecha}"></td>
+                        <td>
+                            <a th:href="@{/evaluaciones/editarEvaluacion/{id}(id=${evaluacion.eva_id})}" class="btn btn-primary">Modificar</a>
+                            <a th:href="@{/evaluaciones/eliminarEvaluacion/{id}(id=${evaluacion.eva_id})}" 
+                               th:onclick="return confirm('¿Estás seguro de que deseas eliminar esta evaluación?');"
+                               class="btn btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:if="${currentPage > 0}">
+                        <a class="page-link" th:href="@{/evaluaciones/mostrar-evaluacion(page=0)}">Primera</a>
+                    </li>
+                    <li class="page-item" th:if="${currentPage > 0}">
+                        <a class="page-link" th:href="@{/evaluaciones/mostrar-evaluacion(page=${currentPage - 1})}">Anterior</a>
+                    </li>
+                    <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}">
+                        <a class="page-link" th:href="@{/evaluaciones/mostrar-evaluacion(page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
+                    </li>
+                    <li class="page-item" th:if="${currentPage < totalPages - 1}">
+                        <a class="page-link" th:href="@{/evaluaciones/mostrar-evaluacion(page=${currentPage + 1})}">Siguiente</a>
+                    </li>
+                    <li class="page-item" th:if="${currentPage < totalPages - 1}">
+                        <a class="page-link" th:href="@{/evaluaciones/mostrar-evaluacion(page=${totalPages - 1})}">Última</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
+

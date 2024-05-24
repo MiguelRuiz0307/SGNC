@@ -1,0 +1,18 @@
+{
+    "elements": {},
+    "attributes": {
+        "${evaluacion}\"": {},
+        "th:classappend": {},
+        "th:text": {},
+        "th:object": {},
+        "th:onclick": {},
+        "th:action": {},
+        "th:field": {},
+        "th:each": {},
+        "th:placeholder": {},
+        "th:if": {},
+        "readonly": {},
+        "th:src": {},
+        "th:href": {}
+    }
+}

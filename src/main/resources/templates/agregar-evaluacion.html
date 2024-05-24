@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Formulario de Evaluación</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+            <a class="navbar-brand" th:href="@{/}">
+                <img th:src="@{/img/Cuadernillo.png}" width="50" height="50" alt="Logo">
+                SGNC
+            </a>
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-light" id="navbarDropdown" href="https://campusjalpa.uaz.edu.mx/">Campus Jalpa</a>
+                        </li>
+
+                        <!-- Cuadernillo -->
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link dropdown-toggle text-light" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                Cuadernillo
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">                               
+                                <a class="dropdown-item text-black" th:href="@{/cuadernillos}">Mostrar Cuadernillos</a>
+                            </div>
+                        </li>
+
+                        <!-- Alumnos -->
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link dropdown-toggle text-light" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                Alumnos
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item text-black" th:href="@{/agregar-alumno}">Agregar Alumno</a>
+                                <a class="dropdown-item text-black" th:href="@{/mostrar-alumnos}">Mostrar Alumnos</a>
+                            </div>
+                        </li>
+
+                        <!-- Evaluaciones -->
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link dropdown-toggle text-light" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                Evaluaciones
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item text-black" th:href="@{/evaluaciones/agregar-evaluacion}">Agregar Evaluacion</a>
+                                <a class="dropdown-item text-black" th:href="@{/evaluaciones/mostrar-evaluacion}">Mostrar Evaluaciones</a>
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-light" id="navbarDropdown" th:href="@{/inicio}">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" onclick="history.back()">Regresar</a>
+                        </li>
+                        
+                        <form class="d-flex" th:action="@{/logout}" method="post">
+                            <button class="btn btn-outline-light" type="submit">Cerrar Sesión</button>
+                        </form>
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <h2 class="mt-5">Formulario de Evaluación</h2>
+
+            <!-- Agrega el formulario -->
+            <form th:action="@{/evaluaciones/guardar-evaluacion}" method="POST" th:object="${evaluacion}">
+                <!-- Agrega la lista de cuadernillos -->
+                <div class="form-group mt-3">
+                    <label for="cuadernillo">Cuadernillo:</label>
+                    <select id="cuadernillo" name="cuadernillo" class="form-control">
+                        <!-- Opciones de cuadernillos -->
+                        <option th:each="cuadernillo: ${cuadernillos}" 
+                                th:value="${cuadernillo.cua_clave}" 
+                                th:text="${cuadernillo.cua_nombre}"
+                                th:attr="data-cantidad=${cuadernillo.cua_cantidad_ejercicios}, data-rango=${cuadernillo.cua_total_ejercicios}">
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Agrega la lista de matrículas de alumnos -->
+                <div class="form-group mt-3">
+                    <label for="alumno">Matrícula del Alumno:</label>
+                    <select id="alumno" name="alumno" class="form-control">
+                        <!-- Opciones de matrículas -->
+                        <option th:each="alumno: ${alumnos}" 
+                                th:value="${alumno.alu_matricula}" 
+                                th:text="${alumno.alu_matricula}"></option>
+                    </select>
+                </div>
+
+                <!-- Campo de fecha -->
+                <div class="mb-3">
+                    <label for="eva_fecha" class="form-label">Fecha</label>
+                    <input type="date" class="form-control" id="eva_fecha" th:field="*{eva_fecha}" placeholder="Fecha" required>
+                </div>
+
+
+                <!-- Agrega el botón para generar números aleatorios -->
+                <div class="form-group mt-3">
+                    <button type="button" class="btn btn-primary" onclick="generarAleatorios()">Generar Aleatorios</button>
+                </div>
+
+                <!-- Campo para mostrar los números aleatorios generados -->
+                <div class="form-group mt-3">
+                    <label for="eva_num_aleatorios">Números Aleatorios:</label>
+                    <textarea id="eva_num_aleatorios" name="eva_num_aleatorios" class="form-control" rows="3" readonly></textarea>
+                </div>
+
+                <!-- Botón para guardar la evaluación -->
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-primary">Guardar Evaluación</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Agrega el enlace al archivo JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYmBxHTV3aiDh4/GfNQIfY0dJZ" crossorigin="anonymous"></script>
+
+        <script>
+                        document.getElementById("evaluacionForm").addEventListener("submit", function (event) {
+                            event.preventDefault();
+                            var cuadernillo = document.getElementById("cuadernillo").value;
+                            var alumno = document.getElementById("alumno").value;
+                            fetch(`/evaluaciones/exists?alu_matricula=${alumno}&cua_clave=${cuadernillo}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data === true) {
+                                            alert("Esta evaluación ya existe.");
+                                        } else {
+                                            document.getElementById("evaluacionForm").submit();
+                                        }
+                                    })
+                                    .catch(error => console.error('Error:', error));
+                        });
+
+                        function generarAleatorios() {
+                            var cuadernilloSelect = document.getElementById("cuadernillo");
+                            var cuadernilloSeleccionado = cuadernilloSelect.options[cuadernilloSelect.selectedIndex];
+                            var cantidadEjercicios = parseInt(cuadernilloSeleccionado.getAttribute("data-cantidad"));
+                            var rangoEjercicios = parseInt(cuadernilloSeleccionado.getAttribute("data-rango"));
+                            var numerosAleatorios = new Set();
+                            while (numerosAleatorios.size < cantidadEjercicios) {
+                                var numeroAleatorio = Math.floor(Math.random() * rangoEjercicios) + 1;
+                                numerosAleatorios.add(numeroAleatorio);
+                            }
+                            var numerosOrdenados = Array.from(numerosAleatorios).sort((a, b) => a - b);
+                            document.getElementById("eva_num_aleatorios").value = numerosOrdenados.join(", ");
+                        }
+        </script>
+
+    </body>
+</html>
+
+

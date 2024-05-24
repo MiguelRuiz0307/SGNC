@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Agregar Alumno</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <style>
+            .menu-link {
+                font-family: Arial, sans-serif;
+            }
+
+            footer {
+                background-color: rgba(0, 0, 0, 0.05);
+                padding: 10px;
+                text-align: center;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+            .navbar-brand, .nav-link {
+                font-size: 1.25rem;
+            }
+        </style>
+
+    </head>
+
+    <body>
+
+        <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+            <a class="navbar-brand" th:href="@{/}">
+                <img th:src="@{/img/Cuadernillo.png}" width="50" height="50" alt="Logo">
+                SGNC
+            </a>
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link text-light" id="navbarDropdown" href="https://campusjalpa.uaz.edu.mx/">Campus Jalpa</a>
+                        </li>
+
+                        <!-- Cuadernillo -->
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link dropdown-toggle text-light" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                Cuadernillo
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">                               
+                                <a class="dropdown-item text-black" th:href="@{/cuadernillos}">Mostrar Cuadernillos</a>
+                            </div>
+                        </li>
+
+                        <!-- Alumnos -->
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link dropdown-toggle text-light" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                Alumnos
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item text-black" th:href="@{/agregar-alumno}">Agregar Alumno</a>
+                                <a class="dropdown-item text-black" th:href="@{/mostrar-alumnos}">Mostrar Alumnos</a>
+                            </div>
+                        </li>
+
+                        <!-- Evaluaciones -->
+                        <li class="nav-item dropdown mx-2">
+                            <a class="nav-link dropdown-toggle text-light" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                Evaluaciones
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item text-black" th:href="@{/evaluaciones/agregar-evaluacion}">Agregar Evaluacion</a>
+                                <a class="dropdown-item text-black" th:href="@{/evaluaciones/mostrar-evaluacion}">Mostrar Evaluaciones</a>
+                            </div>
+                        </li>                   
+
+                        <li class="nav-item">
+                            <a class="nav-link text-light" id="navbarDropdown" th:href="@{/inicio}">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" onclick="history.back()">Regresar</a>
+                        </li>
+                        
+                        <form class="d-flex" th:action="@{/logout}" method="post">
+                            <button class="btn btn-outline-light" type="submit">Cerrar Sesión</button>
+                        </form>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="container mt-5">
+            <h1 class="text-center mb-4">Agregar Nuevo Alumno</h1>
+            <form th:action="@{/alumnos/guardar}" method="POST" th:object="${alumno}" onsubmit="return validateForm()">
+                <div class="mb-3">
+                    <label for="alu_matricula" class="form-label">Matrícula</label>
+                    <input type="text" class="form-control" id="alu_matricula" th:field="*{alu_matricula}" placeholder="Matrícula" required>
+                </div>
+                <div class="mb-3">
+                    <label for="alu_nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="alu_nombre" th:field="*{alu_nombre}" placeholder="Nombre" required>
+                </div>
+                <div class="mb-3">
+                    <label for="alu_apellido" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="alu_apellido" th:field="*{alu_apellido}" placeholder="Apellido" required>
+                </div>
+                <div class="mb-3">
+                    <label for="alu_carrera" class="form-label">Carrera</label>
+                    <input type="text" class="form-control" id="alu_carrera" th:field="*{alu_carrera}" placeholder="Carrera" required>
+                </div>
+                <div class="mb-3">
+                    <label for="alu_correo" class="form-label">Correo</label>
+                    <input type="email" class="form-control" id="alu_correo" th:field="*{alu_correo}" placeholder="Correo" required>
+                </div>
+                <div class="mb-3 position-relative">
+                    <label for="alu_password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="alu_password" th:field="*{alu_password}" placeholder="Password" required>
+                    <span class="position-absolute top-50 end-0 translate-middle-y me-3 password-toggle" onclick="togglePasswordVisibility()">
+                        <i id="password-icon" class="bi bi-eye"></i>
+                    </span>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar Alumno</button>
+            </form>
+        </div>
+        <script>
+            function validateForm() {
+                const correo = document.getElementById('alu_correo').value;
+                if (!correo.includes('@')) {
+                    alert('El correo debe contener un @.');
+                    return false;
+                }
+                return true;
+            }
+
+            function togglePasswordVisibility() {
+                const passwordInput = document.getElementById('alu_password');
+                const passwordIcon = document.getElementById('password-icon');
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    passwordIcon.classList.remove('bi-eye');
+                    passwordIcon.classList.add('bi-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    passwordIcon.classList.remove('bi-eye-slash');
+                    passwordIcon.classList.add('bi-eye');
+                }
+            }
+        </script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
