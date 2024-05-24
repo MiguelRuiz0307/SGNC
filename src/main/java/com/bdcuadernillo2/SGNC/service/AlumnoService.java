@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,6 +20,17 @@ public class AlumnoService {
 
     private final AlumnoRepository alumnoRepository;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    
+    
+    @Transactional
+    public void updateAlumno(alumnos alumno) {
+        String sql = "CALL update_alumno(?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, alumno.getAlu_matricula(), alumno.getAlu_nombre(), alumno.getAlu_apellido(),
+                alumno.getAlu_carrera(), alumno.getAlu_correo(), alumno.getAlu_password());
+    }
+    
     /**
      * Constructor que inyecta el repositorio de alumnos.
      *

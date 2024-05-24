@@ -10,11 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -44,38 +43,29 @@ public class AlumnoController {
         return "redirect:/inicio";
     }
 
+    // Maneja la solicitud para eliminar un alumno y sus evaluaciones
     @GetMapping("/eliminar")
     public String eliminarAlumnoYEvaluciones(String alu_matricula) {
         alumnoService.eliminarAlumnoYEvaluciones(alu_matricula);
         return "redirect:/mostrar-alumnos";
     }
 
-    @RequestMapping("/editar")
-    public String editarAlumno(String matricula, Model model) {
+    // Maneja la solicitud para mostrar el formulario de edición de un alumno
+    @GetMapping("/editar")
+    public String editarAlumno(@RequestParam String matricula, Model model) {
         String mensajeError = "";
 
-        try {
-            //int id = Integer.parseInt(matricula);
+        Optional<alumnos> opcionalAlumno = alumnoService.findAlumno(matricula);
 
-            Optional<alumnos> opcionalAlumno = alumnoService.findAlumno(matricula);
-
-            if (opcionalAlumno.isPresent()) {
-
-                alumnos alumno = opcionalAlumno.get();
-                model.addAttribute("alumnos", alumno);
-
-                return "editar-alumno.html";
-            } else {
-                mensajeError = "Alumno no encontrado";
-                model.addAttribute("mensajeError", mensajeError);
-                return "error";
-            }
-        } catch (NumberFormatException e) {
-            mensajeError = "Matrícula del alumno inválido";
+        if (opcionalAlumno.isPresent()) {
+            alumnos alumno = opcionalAlumno.get();
+            model.addAttribute("alumno", alumno);
+            return "editar-alumno";
+        } else {
+            mensajeError = "Alumno no encontrado";
             model.addAttribute("mensajeError", mensajeError);
             return "error";
         }
-
     }
 
     /**
@@ -84,9 +74,10 @@ public class AlumnoController {
      * @param alumno
      * @return
      */
+    // Guarda los cambios al editar un alumno
     @PostMapping("/guardarCambios")
-    public String guardarCambios(alumnos alumno) {
-        alumnoService.guardarCambios(alumno);
+    public String guardarCambios(@ModelAttribute alumnos alumno) {
+        alumnoService.updateAlumno(alumno);
         return "redirect:/mostrar-alumnos";
     }
 
